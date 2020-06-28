@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+  master:
+    image: mysql:5.7
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin
+    environment:
+    - MYSQL_ROOT_PASSWORD=123456
+  replica1:
+    image: mysql:5.7
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --read-only=ON
+    environment:
+    - MYSQL_ROOT_PASSWORD=123456
+  replica2:
+    image: mysql:5.7
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --read-only=ON
+    environment:
+    - MYSQL_ROOT_PASSWORD=123456
+  pt-heartbeat:
+    image: yuuki0xff/percona-toolkit:latest
+    entrypoint: pt-heartbeat
+    command: --update --create-table --host=master --user=root --password=123456 --database=percona --interval=0.25 --check-read-only --no-version-check
+    depends_on:
+    - master
+  proxysql:
+    image: proxysql/proxysql:2.0.12
+    command: --no-version-check --reload
+    volumes:
+    - ./proxysql.cnf:/etc/proxysql.cnf:ro
+    expose:
+    - 3306
+    - 6032
+    depends_on:
+    - master
+    - replica1
+    - replica2
