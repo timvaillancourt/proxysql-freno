@@ -10,15 +10,9 @@ mysql_variables=
 {
     threads=4
     max_connections=2048
-    default_query_delay=0
-    default_query_timeout=36000000
-    have_compress=true
-    poll_timeout=2000
     interfaces="0.0.0.0:3306"
-    default_schema="information_schema"
-    stacksize=1048576
     server_version="5.7.30"
-    connect_timeout_server=3000
+    connect_timeout_server=1500
     monitor_username="root"
     monitor_password="123456"
     monitor_history=120000
@@ -31,8 +25,6 @@ mysql_variables=
     monitor_replication_lag_use_percona_heartbeat="percona.heartbeat"
     ping_interval_server_msec=5000
     ping_timeout_server=500
-    commands_stats=true
-    sessions_sort=true
     connect_retries_on_failure=3
 }
 
