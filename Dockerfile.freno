@@ -1,11 +1,11 @@
-FROM golang:1.14
+FROM golang:1.14-stretch
 
 COPY freno /go/src/github.com/github/freno
 WORKDIR /go/src/github.com/github/freno
 
 RUN go build -o freno cmd/freno/main.go
 
-FROM golang:1.14
+FROM debian:stretch
 
 COPY --from=0 /go/src/github.com/github/freno/freno /usr/local/bin/freno
-ENTRYPOINT ["/usr/local/bin/freno"]
+ENTRYPOINT ["freno"]
