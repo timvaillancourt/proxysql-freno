@@ -29,7 +29,7 @@ services:
   pt-heartbeat:
     image: yuuki0xff/percona-toolkit:latest
     entrypoint: pt-heartbeat
-    command: --update --create-table --host=master --user=root --password=123456 --database=percona --interval=0.5 --check-read-only --no-version-check
+    command: --update --create-table --host=master --user=heartbeat --password=heartbeat --database=percona --interval=0.5 --check-read-only --no-version-check
     restart: on-failure
     depends_on:
     - init
