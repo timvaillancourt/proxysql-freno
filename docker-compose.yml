@@ -45,6 +45,7 @@ services:
     - ./etc/freno.json:/etc/freno.json:ro
     depends_on:
     - init
+    - pt-heartbeat
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload
@@ -55,3 +56,4 @@ services:
     - 6032
     depends_on:
     - init
+    - pt-heartbeat
