@@ -14,9 +14,11 @@ run_sql() {
     mysql -uroot -p123456 -h${host} <${sql_path}
     [ $? -lt 1 ] && break
     echo "WARNING: retrying SQL script on ${host}: '${sql_path}' in 3 seconds"
-    sleep 3 
+    sleep 3
   done
 }
+
+sleep 10
 
 run_sql master /sql/setup-heartbeat.sql
 run_sql replica1 /sql/setup-replication.sql

@@ -1,20 +1,20 @@
 {
   "ListenPort": 8111,
   "DefaultRaftPort": 10008,
-  "RaftDataDir": "/var/lib/freno",
+  "RaftDataDir": "/tmp",
   "RaftBind": "127.0.0.1",
   "RaftNodes": [],
   "EnableSingleNode": true,
   "Stores": {
     "MySQL": {
-      "User": "root",
-      "Password": "123456",
+      "User": "heartbeat",
+      "Password": "heartbeat",
       "MetricQuery": "select unix_timestamp(now(6)) - unix_timestamp(ts) as lag_check from percona.heartbeat order by ts desc limit 1",
       "ThrottleThreshold": 1.0,
+      "IgnoreDialTcpErrors": true,
       "Clusters": {
         "local": {
-          "User": "root",
-          "Password": "123456",
+          "IgnoreHostsCount": 1,
           "StaticHostsSettings" : {
               "Hosts": [
                 "replica1:3306",
