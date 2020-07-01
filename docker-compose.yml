@@ -35,14 +35,14 @@ services:
     ports:
     - 8111:8111
     volumes:
-    - ./freno.json:/etc/freno.json:ro
+    - ./etc/freno.json:/etc/freno.json:ro
     depends_on:
     - freno-db
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload
     volumes:
-    - ./proxysql.cnf:/etc/proxysql.cnf:ro
+    - ./etc/proxysql.cnf:/etc/proxysql.cnf:ro
     expose:
     - 3306
     - 6032
