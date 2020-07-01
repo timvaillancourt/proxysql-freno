@@ -21,10 +21,6 @@ services:
     command: --update --create-table --host=master --user=root --password=123456 --database=percona --interval=0.25 --check-read-only --no-version-check
     depends_on:
     - master
-  freno-db:
-    image: mysql:5.7
-    environment:
-    - MYSQL_ROOT_PASSWORD=123456
   freno:
     build:
       context: .
@@ -36,8 +32,6 @@ services:
     - 8111:8111
     volumes:
     - ./etc/freno.json:/etc/freno.json:ro
-    depends_on:
-    - freno-db
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload

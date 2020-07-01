@@ -1,8 +1,28 @@
 {
-	"ListenPort": 8111,
-	"BackendMySQLHost": "freno-db",
-	"BackendMySQLPort": 3306,
-	"BackendMySQLSchema": "freno",
-	"BackendMySQLUser": "root",
-	"BackendMySQLPassword": "123456"
+  "ListenPort": 8111,
+  "DefaultRaftPort": 10008,
+  "RaftDataDir": "/var/lib/freno",
+  "RaftBind": "127.0.0.1",
+  "RaftNodes": [],
+  "EnableSingleNode": true,
+  "Stores": {
+    "MySQL": {
+      "User": "root",
+      "Password": "123456",
+      "MetricQuery": "select unix_timestamp(now(6)) - unix_timestamp(ts) as lag_check from percona.heartbeat order by ts desc limit 1",
+      "ThrottleThreshold": 1.0,
+      "Clusters": {
+        "local": {
+          "User": "root",
+          "Password": "123456",
+          "StaticHostsSettings" : {
+              "Hosts": [
+                "replica1:3306",
+                "replica2:3306"
+              ]
+          }
+        }
+      }
+    }
+  }
 }
