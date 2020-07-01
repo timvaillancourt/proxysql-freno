@@ -23,3 +23,5 @@ sleep 10
 run_sql master /sql/setup-heartbeat.sql
 run_sql replica1 /sql/setup-replication.sql
 run_sql replica2 /sql/setup-replication.sql
+
+echo "Done init.sh"

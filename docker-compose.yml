@@ -29,14 +29,13 @@ services:
   pt-heartbeat:
     image: yuuki0xff/percona-toolkit:latest
     entrypoint: pt-heartbeat
-    command: --update --create-table --host=master --user=root --password=123456 --database=percona --interval=0.25 --check-read-only --no-version-check
-    restart: always
+    command: --update --create-table --host=master --user=root --password=123456 --database=percona --interval=0.5 --check-read-only --no-version-check
+    restart: on-failure
     depends_on:
     - init
   freno:
     build:
-      context: .
-      dockerfile: Dockerfile.freno
+      context: ./freno
     command: '--config /etc/freno.json --debug --http'
     expose:
     - 8111
