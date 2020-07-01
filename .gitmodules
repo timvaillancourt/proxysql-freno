@@ -1,0 +1,3 @@
+[submodule "freno"]
+	path = freno
+	url = https://github.com/github/freno

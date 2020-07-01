@@ -1,0 +1,11 @@
+FROM golang:1.14
+
+COPY freno /go/src/github.com/github/freno
+WORKDIR /go/src/github.com/github/freno
+
+RUN go build -o freno cmd/freno/main.go
+
+FROM golang:1.14
+
+COPY --from=0 /go/src/github.com/github/freno/freno /usr/local/bin/freno
+ENTRYPOINT ["/usr/local/bin/freno"]

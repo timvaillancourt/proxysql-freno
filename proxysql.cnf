@@ -16,14 +16,14 @@ mysql_variables=
     monitor_username="root"
     monitor_password="123456"
     monitor_history=120000
-    monitor_connect_interval=5000
-    monitor_ping_interval=2500
-    monitor_read_only_interval=750
-    monitor_read_only_timeout=500
-    monitor_replication_lag_interval=750
-    monitor_replication_lag_timeout=500
+    monitor_connect_interval=2500
+    monitor_ping_interval=1000
+    monitor_read_only_interval=200
+    monitor_read_only_timeout=100
+    monitor_replication_lag_interval=250
+    monitor_replication_lag_timeout=150
     monitor_replication_lag_use_percona_heartbeat="percona.heartbeat"
-    ping_interval_server_msec=5000
+    ping_interval_server_msec=3000
     ping_timeout_server=500
     connect_retries_on_failure=3
 }
@@ -63,15 +63,17 @@ mysql_replication_hostgroups=
 mysql_users=
 (
   {
-    username="root"
+    username="test_rw"
     password="123456"
     active=1
     default_hostgroup=10
+    default_schema="test"
   },
   {
-    username="root_ro"
+    username="test_ro"
     password="123456"
     active=1
     default_hostgroup=20
+    default_schema="test"
   }
 )

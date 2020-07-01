@@ -1,0 +1,8 @@
+{
+	"ListenPort": 8111,
+	"BackendMySQLHost": "freno-mysql",
+	"BackendMySQLPort": 3306,
+	"BackendMySQLSchema": "freno",
+	"BackendMySQLUser": "root",
+	"BackendMySQLPassword": "123456"
+}
