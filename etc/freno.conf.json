@@ -15,11 +15,13 @@
       "Clusters": {
         "local": {
           "IgnoreHostsCount": 1,
-          "StaticHostsSettings" : {
-              "Hosts": [
-                "replica1:3306",
-                "replica2:3306"
-              ]
+          "ProxySQLSettings" : {
+            "Addresses": [
+              "proxysql:6032"
+	    ],
+	    "User": "root",
+	    "Password": "123456",
+	    "HostgroupComment": "local"
           }
         }
       }

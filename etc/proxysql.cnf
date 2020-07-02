@@ -20,6 +20,7 @@ mysql_variables=
     monitor_ping_interval=1000
     monitor_read_only_interval=200
     monitor_read_only_timeout=100
+    monitor_writer_is_also_reader=false
     monitor_replication_lag_interval=250
     monitor_replication_lag_timeout=150
     monitor_replication_lag_use_percona_heartbeat="percona.heartbeat"
@@ -45,6 +46,13 @@ mysql_servers=
   },
   {
     address="replica2"
+    port=3306
+    hostgroup=20
+    max_connections=100
+    max_replication_lag=10
+  },
+  {
+    address="replica3"
     port=3306
     hostgroup=20
     max_connections=100

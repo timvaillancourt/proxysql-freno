@@ -5,6 +5,7 @@ services:
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-master.sql
     environment:
     - MYSQL_ROOT_PASSWORD=123456
+    restart: on-failure
     volumes:
     - ./sql:/sql:ro
   replica1:
@@ -23,8 +24,16 @@ services:
     restart: on-failure
     volumes:
     - ./sql:/sql:ro
+  replica3:
+    image: mysql:5.7
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
+    environment:
+    - MYSQL_ROOT_PASSWORD=123456
+    restart: on-failure
+    volumes:
+    - ./sql:/sql:ro
   pt-heartbeat:
-    image: yuuki0xff/percona-toolkit:latest
+    image: yuuki0xff/percona-toolkit
     entrypoint: pt-heartbeat
     command: --update --create-table --host=master --user=heartbeat --password=heartbeat --database=percona --interval=0.5 --check-read-only --no-version-check
     restart: on-failure
@@ -38,11 +47,13 @@ services:
     - 8111
     ports:
     - 8111:8111
+    restart: on-failure
     volumes:
     - ./etc/freno.conf.json:/etc/freno.conf.json:ro
     depends_on:
     - replica1
     - replica2
+    - replica3
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload
@@ -51,8 +62,12 @@ services:
     expose:
     - 3306
     - 6032
+    restart: on-failure
+    ports:
+    - 6032:6032
     depends_on:
     - pt-heartbeat
     - master
     - replica1
     - replica2
+    - replica3
