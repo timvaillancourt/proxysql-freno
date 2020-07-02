@@ -2,50 +2,47 @@ version: '3.7'
 services:
   master:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-master.sql
     environment:
     - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+    - ./sql:/sql:ro
   replica1:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --read-only=ON
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
+    restart: on-failure
+    volumes:
+    - ./sql:/sql:ro
   replica2:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --read-only=ON
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
-  init:
-    image: mysql:5.7
-    entrypoint: bash
-    command: '/init.sh'
+    restart: on-failure
     volumes:
-    - ./init.sh:/init.sh:ro
     - ./sql:/sql:ro
-    depends_on:
-    - master
-    - replica1
-    - replica2
   pt-heartbeat:
     image: yuuki0xff/percona-toolkit:latest
     entrypoint: pt-heartbeat
     command: --update --create-table --host=master --user=heartbeat --password=heartbeat --database=percona --interval=0.5 --check-read-only --no-version-check
     restart: on-failure
     depends_on:
-    - init
+    - master
   freno:
     build:
       context: ./freno
-    command: '--config /etc/freno.json --debug --http'
+    command: '--debug --http'
     expose:
     - 8111
     ports:
     - 8111:8111
     volumes:
-    - ./etc/freno.json:/etc/freno.json:ro
+    - ./etc/freno.conf.json:/etc/freno.conf.json:ro
     depends_on:
-    - init
-    - pt-heartbeat
+    - replica1
+    - replica2
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload
@@ -55,5 +52,7 @@ services:
     - 3306
     - 6032
     depends_on:
-    - init
     - pt-heartbeat
+    - master
+    - replica1
+    - replica2
