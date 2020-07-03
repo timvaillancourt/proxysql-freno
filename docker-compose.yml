@@ -1,8 +1,8 @@
 version: '3.7'
 services:
-  master:
+  primary:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-master.sql
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-primary.sql
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
@@ -35,25 +35,10 @@ services:
   pt-heartbeat:
     image: yuuki0xff/percona-toolkit
     entrypoint: pt-heartbeat
-    command: --update --create-table --host=master --user=heartbeat --password=heartbeat --database=percona --interval=0.5 --check-read-only --no-version-check
+    command: --update --create-table --host=primary --user=heartbeat --password=heartbeat --database=percona --interval=0.5 --check-read-only --no-version-check
     restart: on-failure
     depends_on:
-    - master
-  freno:
-    build:
-      context: ./freno
-    command: '--debug --http'
-    expose:
-    - 8111
-    ports:
-    - 8111:8111
-    restart: on-failure
-    volumes:
-    - ./etc/freno.conf.json:/etc/freno.conf.json:ro
-    depends_on:
-    - replica1
-    - replica2
-    - replica3
+    - primary
   proxysql:
     image: proxysql/proxysql:2.0.12
     command: --no-version-check --reload
@@ -67,7 +52,20 @@ services:
     - 6032:6032
     depends_on:
     - pt-heartbeat
-    - master
+    - primary
     - replica1
     - replica2
     - replica3
+  freno:
+    build:
+      context: ./freno
+    command: '--debug --http'
+    expose:
+    - 8111
+    ports:
+    - 8111:8111
+    restart: on-failure
+    volumes:
+    - ./etc/freno.conf.json:/etc/freno.conf.json:ro
+    depends_on:
+    - proxysql

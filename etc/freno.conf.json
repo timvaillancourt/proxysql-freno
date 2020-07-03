@@ -13,7 +13,7 @@
       "ThrottleThreshold": 1.0,
       "IgnoreDialTcpErrors": true,
       "Clusters": {
-        "local": {
+        "testbed": {
           "IgnoreHostsCount": 1,
           "ProxySQLSettings" : {
             "Addresses": [
@@ -21,7 +21,7 @@
 	    ],
 	    "User": "freno",
 	    "Password": "fr3n0",
-	    "HostgroupComment": "local"
+	    "HostgroupComment": "testbed"
           }
         }
       }
