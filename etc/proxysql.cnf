@@ -2,7 +2,7 @@ datadir="/var/lib/proxysql"
 
 admin_variables=
 {
-    admin_credentials="admin:admin;root:123456;freno:fr3n0"
+    admin_credentials="root:123456;freno:fr3n0"
     mysql_ifaces="0.0.0.0:6032"
 }
 
@@ -13,8 +13,8 @@ mysql_variables=
     interfaces="0.0.0.0:3306"
     server_version="5.7.30"
     connect_timeout_server=1500
-    monitor_username="root"
-    monitor_password="123456"
+    monitor_username="proxysql"
+    monitor_password="proxysql"
     monitor_history=120000
     monitor_connect_interval=2500
     monitor_ping_interval=1000
