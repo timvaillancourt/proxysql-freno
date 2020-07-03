@@ -19,8 +19,8 @@
             "Addresses": [
               "proxysql:6032"
 	    ],
-	    "User": "root",
-	    "Password": "123456",
+	    "User": "freno",
+	    "Password": "fr3n0",
 	    "HostgroupComment": "local"
           }
         }
