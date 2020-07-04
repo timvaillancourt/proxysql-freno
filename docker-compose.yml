@@ -69,3 +69,9 @@ services:
     - ./etc/freno.conf.json:/etc/freno.conf.json:ro
     depends_on:
     - proxysql
+  test:
+    build:
+      context: .
+    depends_on:
+    - freno
+    - proxysql
