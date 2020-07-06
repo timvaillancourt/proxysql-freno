@@ -15,8 +15,8 @@ GRANT SELECT ON percona.* TO 'proxysql'@'%';
 
 
 
-CREATE DATABASE IF NOT EXISTS test;
-USE test;
+CREATE DATABASE IF NOT EXISTS testbed;
+USE testbed;
 
 CREATE TABLE IF NOT EXISTS test (
     id INT AUTO_INCREMENT,
@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS test (
     PRIMARY KEY(id)
 ) ENGINE=InnoDB;
 
-CREATE USER IF NOT EXISTS 'test_rw'@'%';
-SET PASSWORD FOR 'test_rw'@'%' = PASSWORD('123456');
-GRANT SELECT, INSERT, UPDATE, DELETE ON test.* TO 'test_rw'@'%';
+CREATE USER IF NOT EXISTS 'testbed_rw'@'%';
+SET PASSWORD FOR 'testbed_rw'@'%' = PASSWORD('rw123456');
+GRANT SELECT, INSERT, UPDATE, DELETE ON testbed.* TO 'testbed_rw'@'%';
 
-CREATE USER IF NOT EXISTS 'test_ro'@'%';
-SET PASSWORD FOR 'test_ro'@'%' = PASSWORD('123456');
-GRANT SELECT ON test.* TO 'test_ro'@'%';
+CREATE USER IF NOT EXISTS 'testbed_ro'@'%';
+SET PASSWORD FOR 'testbed_ro'@'%' = PASSWORD('ro123456');
+GRANT SELECT ON testbed.* TO 'testbed_ro'@'%';

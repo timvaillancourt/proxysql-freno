@@ -43,6 +43,7 @@ mysql_servers=
     port=3306
     hostgroup=20
     max_connections=100
+    max_latency_ms=500
     max_replication_lag=10
   },
   {
@@ -50,6 +51,7 @@ mysql_servers=
     port=3306
     hostgroup=20
     max_connections=100
+    max_latency_ms=500
     max_replication_lag=10
   },
   {
@@ -57,6 +59,7 @@ mysql_servers=
     port=3306
     hostgroup=20
     max_connections=100
+    max_latency_ms=500
     max_replication_lag=10
   }
 )
@@ -73,17 +76,17 @@ mysql_replication_hostgroups=
 mysql_users=
 (
   {
-    username="test_rw"
-    password="123456"
+    username="testbed_rw"
+    password="rw123456"
     active=1
     default_hostgroup=10
-    default_schema="test"
+    default_schema="testbed"
   },
   {
-    username="test_ro"
-    password="123456"
+    username="testbed_ro"
+    password="ro123456"
     active=1
     default_hostgroup=20
-    default_schema="test"
+    default_schema="testbed"
   }
 )

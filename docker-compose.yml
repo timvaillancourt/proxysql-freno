@@ -16,6 +16,8 @@ services:
     restart: on-failure
     volumes:
     - ./sql:/sql:ro
+    depends_on:
+    - primary
   replica2:
     image: mysql:5.7
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
@@ -24,6 +26,8 @@ services:
     restart: on-failure
     volumes:
     - ./sql:/sql:ro
+    depends_on:
+    - primary
   replica3:
     image: mysql:5.7
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
@@ -32,6 +36,8 @@ services:
     restart: on-failure
     volumes:
     - ./sql:/sql:ro
+    depends_on:
+    - primary
   pt-heartbeat:
     image: yuuki0xff/percona-toolkit
     entrypoint: pt-heartbeat
@@ -48,8 +54,6 @@ services:
     - 3306
     - 6032
     restart: on-failure
-    ports:
-    - 6032:6032
     depends_on:
     - pt-heartbeat
     - primary
@@ -69,6 +73,7 @@ services:
     - ./etc/freno.conf.json:/etc/freno.conf.json:ro
     depends_on:
     - proxysql
+    - pt-heartbeat
   test:
     build:
       context: .
