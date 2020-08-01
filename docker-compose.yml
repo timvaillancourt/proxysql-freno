@@ -46,7 +46,7 @@ services:
     depends_on:
     - primary
   proxysql:
-    image: proxysql/proxysql:2.0.12
+    image: proxysql/proxysql:2.0.13
     command: --no-version-check --reload
     volumes:
     - ./etc/proxysql.cnf:/etc/proxysql.cnf:ro
