@@ -1,0 +1,23 @@
+FROM mysql:5.7.30
+
+RUN apt-get update && apt-get install -y curl file g++ gcc git make cmake libboost1.67-dev \
+	libboost-system1.67-dev libmysqlclient-dev libcrypto++-dev libssl-dev zlib1g-dev
+
+# http://bugs.mysql.com/bug.php?id=70672
+RUN mkdir /src && cd /src && curl -sLo - https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.30.tar.gz | tar xfvz - mysql-5.7.30/include/hash.h && \
+	mv mysql-5.7.30/include/hash.h /usr/include/mysql/hash.h
+
+RUN git clone https://github.com/sysown/proxysql_mysqlbinlog /src/proxysql_mysqlbinlog
+RUN cd /src/proxysql_mysqlbinlog/libslave && cmake . && make && cd /src/proxysql_mysqlbinlog && make
+
+RUN ls -alh /src/proxysql_mysqlbinlog
+
+
+
+FROM mysql:5.7.30
+
+RUN apt-get update && apt-get install -y libboost-system1.67
+
+COPY --from=0 /src/proxysql_mysqlbinlog/proxysql_binlog_reader /usr/bin/proxysql_binlog_reader
+ADD start-proxysql-binlog-reader.sh  /docker-entrypoint-initdb.d/start-proxysql-binlog-reader.sh
+RUN chmod +x /docker-entrypoint-initdb.d/start-proxysql-binlog-reader.sh

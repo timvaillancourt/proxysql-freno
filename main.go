@@ -36,7 +36,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	log.Printf("ping rw: %v\n", db.Ping())
 	log.Printf("ping ro: %v\n", dbRO.Ping())
 
@@ -74,42 +73,51 @@ func main() {
 
 	hc := &http.Client{}
 	frenoTicker := time.NewTicker(2 * time.Second)
-	insertTicker := time.NewTicker(1 * time.Millisecond)
+	insertTicker := time.NewTicker(10 * time.Millisecond)
 	statusTicker := time.NewTicker(10 * time.Second)
 	for {
 		select {
 		case <-statusTicker.C:
 			log.Printf("status: insert_ok=%d, insert_err=%d, select_ok=%d, select_errs=%d, throttle_cnt=%d",
-				app.insert_oks, app.insert_errs, app.select_oks, app.select_errs, app.throttle_cnt)
+				app.insert_oks,
+				app.insert_errs,
+				app.select_oks,
+				app.select_errs,
+				app.throttle_cnt,
+			)
 		case <-frenoTicker.C:
-			res, err := hc.Get("http://freno:8111/check/test/mysql/testbed")
-			if err != nil {
-				log.Fatal(err)
-			}
+			go func() {
+				res, err := hc.Get("http://freno:8111/check/test/mysql/testbed")
+				if err != nil {
+					log.Fatal(err)
+				}
 
-			bytes, _ := ioutil.ReadAll(res.Body)
-			log.Printf("freno: %s", string(bytes))
-			if res.StatusCode == http.StatusOK {
-				atomic.StoreUint32(&app.throttled, 0)
-			} else {
-				atomic.StoreUint32(&app.throttled, 1)
-			}
+				bytes, _ := ioutil.ReadAll(res.Body)
+				log.Printf("freno: %s", string(bytes))
+				if res.StatusCode == http.StatusOK {
+					atomic.StoreUint32(&app.throttled, 0)
+				} else {
+					atomic.StoreUint32(&app.throttled, 1)
+				}
+			}()
 		case <-insertTicker.C:
-			if atomic.LoadUint32(&app.throttled) != 0 {
-				atomic.AddUint32(&app.throttle_cnt, 1)
-				log.Println("inserts throttled")
-				continue
-			}
-			res := db.MustExec("INSERT INTO testbed.test (msg) values('hello world!')")
-			id, err := res.LastInsertId()
-			if err != nil {
-				atomic.AddUint32(&app.insert_errs, 1)
-				log.Fatal(err)
-			} else {
-				atomic.AddUint32(&app.insert_oks, 1)
-				app.select_chan <- id
-			}
-			//log.Printf("insert: %v\n", id)
+			go func() {
+				if atomic.LoadUint32(&app.throttled) != 0 {
+					atomic.AddUint32(&app.throttle_cnt, 1)
+					log.Println("inserts throttled")
+					return
+				}
+				res := db.MustExec("INSERT INTO testbed.test (msg) values('hello world!')")
+				id, err := res.LastInsertId()
+				if err != nil {
+					atomic.AddUint32(&app.insert_errs, 1)
+					log.Fatal(err)
+				} else {
+					atomic.AddUint32(&app.insert_oks, 1)
+					app.select_chan <- id
+				}
+				//log.Printf("insert: %v\n", id)
+			}()
 		}
 	}
 }

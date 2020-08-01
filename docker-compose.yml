@@ -1,41 +1,54 @@
 version: '3.7'
 services:
   primary:
-    image: mysql:5.7
+    image: proxysql-testbed-mysql
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-primary.sql
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
+    expose:
+    - 3306
+    - 33060
     volumes:
     - ./sql:/sql:ro
   replica1:
-    image: mysql:5.7
+    image: proxysql-testbed-mysql
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
+    expose:
+    - 3306
+    - 33060
     volumes:
     - ./sql:/sql:ro
     depends_on:
     - primary
   replica2:
-    image: mysql:5.7
+    image: proxysql-testbed-mysql
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
+    expose:
+    - 3306
+    - 33060
     volumes:
     - ./sql:/sql:ro
     depends_on:
     - primary
   replica3:
-    image: mysql:5.7
+    image: proxysql-testbed-mysql
     command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
     volumes:
     - ./sql:/sql:ro
+    - /tmp/proxysql_binlog_reader.log:/tmp/proxysql_binlog_reader.log
     depends_on:
     - primary
   pt-heartbeat:
