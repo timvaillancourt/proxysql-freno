@@ -1,2 +1,2 @@
-# proxysql-testbed
-A playground for MySQL+ProxySQL+pt-heartbeat
+# proxysql-freno
+A playground for MySQL + ProxySQL + pt-heartbeat + Freno
