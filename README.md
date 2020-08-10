@@ -3,6 +3,17 @@ A playground for MySQL + ProxySQL + pt-heartbeat + Freno
 
 ## Testing
 
+### Start environment
+_Note: wait a few minutes for errors to subside_
+```
+$ make
+```
+
+### View logs
+```
+$ make logs
+```
+
 ### Use ProxySQL shell
 ```
 $ ./mysql-shell.sh -h proxysql -P 6032
