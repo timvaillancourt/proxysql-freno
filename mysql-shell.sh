@@ -25,5 +25,5 @@ while getopts "h:u:p:P:e:" opt; do
   esac
 done
 
-docker run --rm -it --network=proxysql-testbed_default \
+docker run --rm -it --network=proxysql-freno_default \
 	--link=${host}:${host} --entrypoint=mysql mysql:5.7 -h ${host} -P ${port} -u${user} -p${password} ${extra}
