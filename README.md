@@ -42,3 +42,14 @@ To unpause:
 ```
 $ docker-compose unpause replica1
 ```
+
+### Do Freno check
+```
+$ ./freno-check.sh
+{
+  "StatusCode": 200,
+  "Value": 0.1128,
+  "Threshold": 1,
+  "Message": ""
+}
+```
