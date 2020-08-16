@@ -2,7 +2,7 @@ version: '3.7'
 services:
   primary:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-primary.sql
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=1 --log-bin=mysql-bin --relay-log=relay-bin --init-file=/sql/setup-primary.sql
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
@@ -10,7 +10,7 @@ services:
     - ./sql:/sql:ro
   replica1:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=2 --log-bin=mysql-bin --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
@@ -20,7 +20,7 @@ services:
     - primary
   replica2:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
@@ -30,7 +30,7 @@ services:
     - primary
   replica3:
     image: mysql:5.7
-    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=3 --log-bin=mysql-bin --log-slave-updates --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
+    command: --gtid-mode=ON --enforce-gtid-consistency=ON --server-id=4 --log-bin=mysql-bin --relay-log=relay-bin --init-file=/sql/setup-replica.sql --read-only=ON
     environment:
     - MYSQL_ROOT_PASSWORD=123456
     restart: on-failure
