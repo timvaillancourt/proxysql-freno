@@ -63,7 +63,7 @@ services:
   freno:
     build:
       context: ./freno
-    command: '--debug --http'
+    command: '--debug --http --enable-profiling'
     expose:
     - 8111
     ports:
